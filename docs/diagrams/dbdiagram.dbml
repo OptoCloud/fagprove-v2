@@ -1,0 +1,34 @@
+table authtokens {
+  id uuid [primary key]
+  user_id uuid
+  token_hash varchar
+  created_at timestamp
+  expires_at timestamp
+}
+
+Table users {
+  id uuid [primary key]
+  username varchar
+  email varchar
+  password_hash varchar
+  created_at timestamp
+}
+
+table notes {
+  id uuid [primary key]
+  user_id uuid
+  directory_id uuid
+  title varchar
+  content varchar
+  created_at timestamp
+}
+
+table directory {
+  id uuid [primary key]
+  title varchar
+  created_at timestamp
+}
+
+Ref: authtokens.user_id > users.id
+Ref: notes.user_id > users.id
+Ref: notes.directory_id > directory.id
