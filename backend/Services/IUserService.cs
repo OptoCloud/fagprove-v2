@@ -19,4 +19,11 @@ public interface IUserService
     /// <param name="request"></param>
     /// <returns></returns>
     public Task<OneOf<string, ApiError>> Login(AccountLoginApiRequest request);
+
+    /// <summary>
+    /// Returns a user if the token is valid, otherwise returns a error DTO containing the error message
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public Task<OneOf<UserEntity, ApiError>> GetUserByTokenAsync(string token);
 }

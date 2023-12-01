@@ -72,4 +72,25 @@ public class UserService : IUserService
 
         return token;
     }
+
+    public async Task<OneOf<UserEntity, ApiError>> GetUserByTokenAsync(string token)
+    {
+        var tokenHash = Utils.HashToStr(token);
+
+        var authToken = await _dbContext.AuthTokens.FirstOrDefaultAsync(e => e.TokenHash == tokenHash);
+
+        if (authToken == null)
+        {
+            return new ApiError("Invalid token");
+        }
+
+        var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.Id == authToken.UserId);
+
+        if (user == null)
+        {
+            return new ApiError("Invalid token");
+        }
+
+        return user;
+    }
 }
