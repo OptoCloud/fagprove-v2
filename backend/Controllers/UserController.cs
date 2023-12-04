@@ -24,7 +24,8 @@ public class UserController : ControllerBase
         return result.Match<IActionResult>(_ => Ok(), err => BadRequest(err));
     }
 
-    [HttpPost("login")]
+    [HttpPut("login")]
+    [ProducesResponseType(typeof(AccountLoginApiResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> Login([FromBody] AccountLoginApiRequest request)
     {
         var result = await _userService.Login(request);
