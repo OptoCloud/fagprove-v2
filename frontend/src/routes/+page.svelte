@@ -1,15 +1,10 @@
 <!-- YOU CAN DELETE EVERYTHING IN THIS PAGE -->
 
-<div class="container h-full mx-auto flex justify-center items-center">
+<div class="px-8 py-16">
 	<div class="space-y-5">
-		<h1 class="h1">Welcome to SvelteKit + SkeletonUI!</h1>
-		<p>Start by exploring:</p>
-		<ul>
-			<li><code class="code">/src/routes/+layout.svelte</code> - barebones layout</li>
-			<li><code class="code">/src/app.postcss</code> - app wide css</li>
-			<li>
-				<code class="code">/src/routes/+page.svelte</code> - this page, you can replace the contents
-			</li>
-		</ul>
+		<h1 class="h1">Welcome to Notes App!</h1>
+		<p class="text-lg">
+			Notes App is a simple note taking app that allows you to create, edit, and delete notes.
+		</p>
 	</div>
 </div>
