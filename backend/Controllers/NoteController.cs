@@ -60,4 +60,33 @@ public class NoteController : ControllerBase
 
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
+
+    [HttpPut("/{noteId}")]
+    public async Task<IActionResult> UpdateNote([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateRequest request)
+    {
+        var user = (UserEntity?)HttpContext.Items["User"];
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _noteService.UpdateNoteAsync(noteId, note =>
+        {
+            if (note.UserId != user.Id)
+            {
+                return;
+            } 
+
+            if (request.Title != null)
+            {
+                note.Title = request.Title;
+            }
+            if (request.Content != null)
+            {
+                note.Content = request.Content;
+            }
+        });
+
+        return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
+    }
 }
