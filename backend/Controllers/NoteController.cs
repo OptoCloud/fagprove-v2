@@ -39,7 +39,7 @@ public class NoteController : ControllerBase
 
         var result = await _noteService.GetNoteAsync(noteId);
 
-        if (result == null)
+        if (result == null || result.UserId != user.Id)
         {
             return NotFound();
         }
