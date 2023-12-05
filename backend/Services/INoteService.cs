@@ -8,7 +8,7 @@ public interface INoteService
 {
     public Task<NoteEntity?> GetNoteAsync(Guid noteId);
 
-    public IAsyncEnumerable<NoteEntity> GetNotesByUserIdAsync(Guid userId);
+    public Task<List<NoteEntity>> GetNotesByUserIdAsync(Guid userId);
 
     public Task<OneOf<NoteEntity, ApiError>> CreateNoteAsync(Guid ownerUserId, string title, string content);
 

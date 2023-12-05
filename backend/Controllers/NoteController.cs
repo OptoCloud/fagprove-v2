@@ -17,7 +17,7 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("/list")]
-    public IActionResult ListNotes()
+    public async Task<IActionResult> ListNotes()
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
@@ -25,7 +25,9 @@ public class NoteController : ControllerBase
             return Unauthorized();
         }
 
-        return Ok(_noteService.GetNotesByUserIdAsync(user.Id));
+        var notes = await _noteService.GetNotesByUserIdAsync(user.Id);
+
+        return Ok(notes.Select(note => new ApiNote(note)));
     }
 
     [HttpGet("/{noteId}")]

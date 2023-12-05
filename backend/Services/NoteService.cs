@@ -22,9 +22,9 @@ public class NoteService : INoteService
         return _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
     }
 
-    public IAsyncEnumerable<NoteEntity> GetNotesByUserIdAsync(Guid userId)
+    public async Task<List<NoteEntity>> GetNotesByUserIdAsync(Guid userId)
     {
-        return _dbContext.Notes.Where(e => e.UserId == userId).AsAsyncEnumerable();
+        return await _dbContext.Notes.Where(e => e.UserId == userId).ToListAsync();
     }
 
     public async Task<OneOf<NoteEntity, ApiError>> CreateNoteAsync(Guid ownerUserId, string title, string description)
@@ -32,11 +32,6 @@ public class NoteService : INoteService
         if (string.IsNullOrWhiteSpace(title))
         {
             return new ApiError("Title cannot be empty");
-        }
-
-        if (await _dbContext.Notes.AnyAsync(e => e.Title == title))
-        {
-            return new ApiError("Project with this title already exists");
         }
 
         var project = new NoteEntity
