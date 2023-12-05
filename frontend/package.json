@@ -45,47 +45,5 @@
 	"type": "module",
 	"dependencies": {
 		"@floating-ui/dom": "1.5.3"
-	},
-	"prettier": {
-		"printWidth": 100,
-		"tabWidth": 2,
-		"useTabs": false,
-		"semi": true,
-		"singleQuote": true,
-		"quoteProps": "as-needed",
-		"trailingComma": "es5",
-		"bracketSpacing": true,
-		"bracketSameLine": false,
-		"arrowParens": "always",
-		"requirePragma": false,
-		"insertPragma": false,
-		"proseWrap": "preserve",
-		"htmlWhitespaceSensitivity": "css",
-		"endOfLine": "crlf",
-		"svelteSortOrder": "options-scripts-markup-styles",
-		"svelteStrictMode": false,
-		"svelteAllowShorthand": true,
-		"importOrder": [
-			"^@skeletonlabs/skeleton/themes.+\\.css$",
-			"^@skeletonlabs/skeleton/styles.+\\.css$",
-			"^.+\\.postcss$",
-			"^."
-		],
-		"plugins": [
-			"prettier-plugin-svelte",
-			"@ianvs/prettier-plugin-sort-imports",
-			"prettier-plugin-tailwindcss"
-		],
-		"pluginSearchDirs": [
-			"."
-		],
-		"overrides": [
-			{
-				"files": "*.svelte",
-				"options": {
-					"parser": "svelte"
-				}
-			}
-		]
 	}
 }

@@ -25,11 +25,11 @@
         password,
       });
       AuthTokenStore.set(response.token ?? null);
-	  if (!!response.token) {
-      	goto('/home');
-	  }
+      if (!!response.token) {
+        goto('/home');
+      }
     } catch (error) {
-		console.log(error);
+      console.log(error);
     } finally {
       loading = false;
     }
@@ -47,26 +47,26 @@
     <h2>Login</h2>
 
     <!-- Username -->
-	<label class="label">
-	  <span>Username or Email</span>
-	  <input
-	  	class="input"
-		type="text"
-		placeholder="Username or Email"
-		bind:value={usernameOrEmail}
-	  />
-	</label>
+    <label class="label">
+      <span>Username or Email</span>
+      <input
+        class="input"
+        type="text"
+        placeholder="Username or Email"
+        bind:value={usernameOrEmail}
+      />
+    </label>
 
     <!-- Password -->
-	<label class="label">
-		<span>Password</span>
-		<input
-	  		class="input"
-			type="password"
-			placeholder="Password"
-			bind:value={password}
-		/>
-	</label>
+    <label class="label">
+      <span>Password</span>
+      <input
+        class="input"
+        type="password"
+        placeholder="Password"
+        bind:value={password}
+      />
+    </label>
 
     <!-- Submit -->
     <button type="submit" class="btn variant-filled w-full self-center" {disabled}> Login </button>
