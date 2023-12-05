@@ -7,6 +7,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddCors(options =>
+{
+    string[] defaultOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()!;
+
+    options.AddDefaultPolicy(builder => builder
+        .WithOrigins(defaultOrigins)
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials()
+    );
+});
+
+builder.Services.AddDbContext<DatabaseContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
+});
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<INoteService, NoteService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,14 +59,6 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-builder.Services.AddDbContext<DatabaseContext>(options =>
-{
-    options.UseNpgsql(builder.Configuration.GetConnectionString("Database"));
-});
-
-builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<INoteService, NoteService>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -57,6 +69,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 // Authentication middleware
 app.Use(async (context, next) =>
