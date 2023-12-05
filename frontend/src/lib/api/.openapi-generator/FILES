@@ -5,7 +5,9 @@ index.ts
 models/AccountLoginApiRequest.ts
 models/AccountLoginApiResponse.ts
 models/AccountRegisterApiRequest.ts
+models/ApiNote.ts
 models/ApiNoteCreateRequest.ts
 models/ApiNoteUpdateRequest.ts
+models/ProblemDetails.ts
 models/index.ts
 runtime.ts
