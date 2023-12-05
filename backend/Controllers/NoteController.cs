@@ -17,6 +17,8 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("/list")]
+    [ProducesResponseType(typeof(List<ApiNote>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ListNotes()
     {
         var user = (UserEntity?)HttpContext.Items["User"];
@@ -31,6 +33,8 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("/{noteId}")]
+    [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> GetNote([FromRoute] Guid noteId)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
@@ -50,6 +54,8 @@ public class NoteController : ControllerBase
     }
 
     [HttpPost("/create")]
+    [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateNote([FromBody] ApiNoteCreateRequest request)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
@@ -64,6 +70,8 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("/{noteId}")]
+    [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> UpdateNote([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateRequest request)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
