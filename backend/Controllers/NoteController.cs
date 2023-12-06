@@ -111,6 +111,35 @@ public class NoteController : ControllerBase
 
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
+
+    [HttpDelete("/{noteId}")]
+    [Produces(Text.Plain)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    public async Task<IActionResult> DeleteNote([FromRoute] Guid noteId)
+    {
+        var user = (UserEntity?)HttpContext.Items["User"];
+        if (user == null)
+        {
+            return Unauthorized("Authentication required");
+        }
+
+        var note = await _noteService.GetNoteAsync(noteId);
+        if (note == null)
+        {
+            return NotFound("Note not found");
+        }
+        if (note.UserId != user.Id)
+        {
+            return Forbid("You do not have access to this note");
+        }
+
+        var result = await _noteService.DeleteNoteAsync(noteId);
+
+        return result.Match<IActionResult>(result => Ok("Note deleted"), err => BadRequest(err));
+    }
     /*
     [HttpPut("/{noteId}/directory")]
     public async Task<IActionResult> UpdateNoteDirectory([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateDirectoryRequest request)

@@ -14,5 +14,5 @@ public interface INoteService
 
     public Task<OneOf<NoteEntity, GenericError>> UpdateNoteAsync(Guid noteId, Action<NoteEntity> modifyAction);
 
-    public Task<OneOf<NoteEntity, GenericError>> DeleteNoteAsync(Guid noteId);
+    public Task<OneOf<bool, GenericError>> DeleteNoteAsync(Guid noteId);
 }

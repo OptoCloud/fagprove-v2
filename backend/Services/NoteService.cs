@@ -63,18 +63,17 @@ public class NoteService : INoteService
         return project;
     }
 
-    public async Task<OneOf<NoteEntity, GenericError>> DeleteNoteAsync(Guid projectId)
+    public async Task<OneOf<bool, GenericError>> DeleteNoteAsync(Guid projectId)
     {
-        var project = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
-
-        if (project == null)
+        var note = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
+        if (note == null)
         {
-            return new GenericError("Project not found");
+            return new GenericError("Note not found");
         }
 
-        _dbContext.Notes.Remove(project);
+        _dbContext.Notes.Remove(note);
         await _dbContext.SaveChangesAsync();
 
-        return project;
+        return true;
     }
 }

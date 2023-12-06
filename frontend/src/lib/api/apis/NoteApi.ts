@@ -32,6 +32,10 @@ export interface CreatePostRequest {
     apiNoteCreateRequest?: ApiNoteCreateRequest;
 }
 
+export interface NoteIdDeleteRequest {
+    noteId: string;
+}
+
 export interface NoteIdGetRequest {
     noteId: string;
 }
@@ -72,6 +76,19 @@ export interface NoteApiInterface {
     /**
      */
     listGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiNote>>;
+
+    /**
+     * 
+     * @param {string} noteId 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NoteApiInterface
+     */
+    noteIdDeleteRaw(requestParameters: NoteIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
+
+    /**
+     */
+    noteIdDelete(noteId: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
 
     /**
      * 
@@ -163,6 +180,42 @@ export class NoteApi extends runtime.BaseAPI implements NoteApiInterface {
      */
     async listGet(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ApiNote>> {
         const response = await this.listGetRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async noteIdDeleteRaw(requestParameters: NoteIdDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters.noteId === null || requestParameters.noteId === undefined) {
+            throw new runtime.RequiredError('noteId','Required parameter requestParameters.noteId was null or undefined when calling noteIdDelete.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
+        const response = await this.request({
+            path: `/{noteId}`.replace(`{${"noteId"}}`, encodeURIComponent(String(requestParameters.noteId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async noteIdDelete(noteId: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.noteIdDeleteRaw({ noteId: noteId }, initOverrides);
         return await response.value();
     }
 
