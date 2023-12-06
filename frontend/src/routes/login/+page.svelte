@@ -38,34 +38,20 @@
 
 <!-- Login Form -->
 <div class="responsive-card card p-8">
-  <form
-    class="flex flex-col space-y-4"
-    on:submit|preventDefault={handleSubmit}
-    use:focusTrap={true}
-  >
+  <form class="flex flex-col space-y-4" on:submit|preventDefault={handleSubmit} use:focusTrap={true}>
     <!-- Title -->
     <h2>Login</h2>
 
     <!-- Username -->
     <label class="label">
       <span>Username or Email</span>
-      <input
-        class="input"
-        type="text"
-        placeholder="Username or Email"
-        bind:value={usernameOrEmail}
-      />
+      <input class="input" type="text" placeholder="Username or Email" bind:value={usernameOrEmail} />
     </label>
 
     <!-- Password -->
     <label class="label">
       <span>Password</span>
-      <input
-        class="input"
-        type="password"
-        placeholder="Password"
-        bind:value={password}
-      />
+      <input class="input" type="password" placeholder="Password" bind:value={password} />
     </label>
 
     <!-- Submit -->

@@ -7,7 +7,7 @@
   import { AppBar, Toast, initializeStores, storePopup, type ModalComponent, Modal } from '@skeletonlabs/skeleton';
 
   const modalRegistry: Record<string, ModalComponent> = {
-    newNoteModal: { ref: NewNoteModal }
+    newNoteModal: { ref: NewNoteModal },
   };
 
   // Initialize svelte stores, this is needed for popups and toast notifications
