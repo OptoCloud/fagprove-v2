@@ -34,33 +34,33 @@ public class NoteService : INoteService
             return new GenericError("Title cannot be empty");
         }
 
-        var project = new NoteEntity
+        var note = new NoteEntity
         {
             UserId = ownerUserId,
             Title = title,
             Content = description
         };
 
-        await _dbContext.Notes.AddAsync(project);
+        await _dbContext.Notes.AddAsync(note);
         await _dbContext.SaveChangesAsync();
 
-        return project;
+        return note;
     }
 
     public async Task<OneOf<NoteEntity, GenericError>> UpdateNoteAsync(Guid projectId, Action<NoteEntity> modifyAction)
     {
-        var project = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
+        var note = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
 
-        if (project == null)
+        if (note == null)
         {
-            return new GenericError("Project not found");
+            return new GenericError("Note not found");
         }
 
-        modifyAction(project);
+        modifyAction(note);
 
         await _dbContext.SaveChangesAsync();
 
-        return project;
+        return note;
     }
 
     public async Task<OneOf<bool, GenericError>> DeleteNoteAsync(Guid projectId)

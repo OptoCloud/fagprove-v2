@@ -44,7 +44,7 @@
 
 <div class="p-8 flex flex-col gap-4">
   <!-- Header -->
-  <div class="flex justify-between items-center">
+  <div class="flex justify-between items-center w-[80vw]">
     <h1 class="h1">Notes</h1>
     <button class="btn variant-filled-primary" on:click={AddNote}> New Note </button>
   </div>

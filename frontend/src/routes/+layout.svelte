@@ -19,6 +19,10 @@
 <Toast position={'bl'} />
 <Modal components={modalRegistry} />
 
+<svelte:head>
+  <title>{PUBLIC_APP_NAME}</title>
+</svelte:head>
+
 <div class="h-full flex flex-col">
   <!-- App bar at the top of the page -->
   <AppBar>
@@ -30,7 +34,7 @@
     <!-- Rightmost content, will display login/logout buttons depending on the user's authentication status -->
     <svelte:fragment slot="trail">
       {#if !!$AuthTokenStore}
-        <a href="/logout" class="btn variant-filled" data-sveltekit-preload-data="tap">Logout</a>
+        <a href="/logout" class="btn variant-filled-tertiary" data-sveltekit-preload-data="tap">Logout</a>
       {:else}
         <a href="/login" class="btn variant-filled">Login</a>
         <a href="/register" class="btn variant-filled">Register</a>

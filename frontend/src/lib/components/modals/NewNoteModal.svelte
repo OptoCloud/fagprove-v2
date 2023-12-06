@@ -3,6 +3,7 @@
   import { NotesStore } from '$lib/stores/NotesStore';
   import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
   import { MapNoteFromApi } from '../../mappers/NoteMapper';
+  import type { ApiNote } from '$lib/api';
 
   const toastStore = getToastStore();
   const modalStore = getModalStore();
@@ -10,19 +11,30 @@
   let title = 'New Note';
   let content = '';
 
+  function HandleResponse(response: ApiNote) {
+    let note = MapNoteFromApi(response);
+    if (note) {
+      NotesStore.add(note);
+      toastStore.trigger({
+        message: 'Note updated',
+        background: 'variant-filled-success',
+      });
+    } else {
+      toastStore.trigger({
+        message: 'Error while updating note',
+        background: 'variant-filled-error',
+      });
+    }
+    modalStore.close();
+  }
+
   function AddNote() {
     noteApi
       .createPost({
         title: title,
         content: content,
       })
-      .then((response) => {
-        let note = MapNoteFromApi(response);
-        if (note) {
-          NotesStore.add(note);
-        }
-        modalStore.close();
-      })
+      .then(HandleResponse)
       .catch((error) => {
         toastStore.trigger({
           message: 'Error while creating note',
