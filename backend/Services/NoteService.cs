@@ -27,11 +27,11 @@ public class NoteService : INoteService
         return await _dbContext.Notes.Where(e => e.UserId == userId).ToListAsync();
     }
 
-    public async Task<OneOf<NoteEntity, ApiError>> CreateNoteAsync(Guid ownerUserId, string title, string description)
+    public async Task<OneOf<NoteEntity, GenericError>> CreateNoteAsync(Guid ownerUserId, string title, string description)
     {
         if (string.IsNullOrWhiteSpace(title))
         {
-            return new ApiError("Title cannot be empty");
+            return new GenericError("Title cannot be empty");
         }
 
         var project = new NoteEntity
@@ -47,13 +47,13 @@ public class NoteService : INoteService
         return project;
     }
 
-    public async Task<OneOf<NoteEntity, ApiError>> UpdateNoteAsync(Guid projectId, Action<NoteEntity> modifyAction)
+    public async Task<OneOf<NoteEntity, GenericError>> UpdateNoteAsync(Guid projectId, Action<NoteEntity> modifyAction)
     {
         var project = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
 
         if (project == null)
         {
-            return new ApiError("Project not found");
+            return new GenericError("Project not found");
         }
 
         modifyAction(project);
@@ -63,13 +63,13 @@ public class NoteService : INoteService
         return project;
     }
 
-    public async Task<OneOf<NoteEntity, ApiError>> DeleteNoteAsync(Guid projectId)
+    public async Task<OneOf<NoteEntity, GenericError>> DeleteNoteAsync(Guid projectId)
     {
         var project = await _dbContext.Notes.FirstOrDefaultAsync(e => e.Id == projectId);
 
         if (project == null)
         {
-            return new ApiError("Project not found");
+            return new GenericError("Project not found");
         }
 
         _dbContext.Notes.Remove(project);

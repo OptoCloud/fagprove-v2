@@ -63,11 +63,11 @@ export interface UserApiInterface {
      * @throws {RequiredError}
      * @memberof UserApiInterface
      */
-    userRegisterPostRaw(requestParameters: UserRegisterPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>>;
+    userRegisterPostRaw(requestParameters: UserRegisterPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>>;
 
     /**
      */
-    userRegisterPost(accountRegisterApiRequest?: AccountRegisterApiRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void>;
+    userRegisterPost(accountRegisterApiRequest?: AccountRegisterApiRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
 
 }
 
@@ -109,7 +109,7 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
 
     /**
      */
-    async userRegisterPostRaw(requestParameters: UserRegisterPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<void>> {
+    async userRegisterPostRaw(requestParameters: UserRegisterPostRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -128,13 +128,18 @@ export class UserApi extends runtime.BaseAPI implements UserApiInterface {
             body: AccountRegisterApiRequestToJSON(requestParameters.accountRegisterApiRequest),
         }, initOverrides);
 
-        return new runtime.VoidApiResponse(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      */
-    async userRegisterPost(accountRegisterApiRequest?: AccountRegisterApiRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<void> {
-        await this.userRegisterPostRaw({ accountRegisterApiRequest: accountRegisterApiRequest }, initOverrides);
+    async userRegisterPost(accountRegisterApiRequest?: AccountRegisterApiRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.userRegisterPostRaw({ accountRegisterApiRequest: accountRegisterApiRequest }, initOverrides);
+        return await response.value();
     }
 
 }

@@ -10,9 +10,9 @@ public interface INoteService
 
     public Task<List<NoteEntity>> GetNotesByUserIdAsync(Guid userId);
 
-    public Task<OneOf<NoteEntity, ApiError>> CreateNoteAsync(Guid ownerUserId, string title, string content);
+    public Task<OneOf<NoteEntity, GenericError>> CreateNoteAsync(Guid ownerUserId, string title, string content);
 
-    public Task<OneOf<NoteEntity, ApiError>> UpdateNoteAsync(Guid noteId, Action<NoteEntity> modifyAction);
+    public Task<OneOf<NoteEntity, GenericError>> UpdateNoteAsync(Guid noteId, Action<NoteEntity> modifyAction);
 
-    public Task<OneOf<NoteEntity, ApiError>> DeleteNoteAsync(Guid noteId);
+    public Task<OneOf<NoteEntity, GenericError>> DeleteNoteAsync(Guid noteId);
 }

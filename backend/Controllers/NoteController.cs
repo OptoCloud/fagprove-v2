@@ -2,6 +2,7 @@
 using backend.DTOs;
 using backend.Services;
 using Microsoft.AspNetCore.Mvc;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace backend.Controllers;
 
@@ -17,14 +18,15 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("/list")]
+    [Produces(Application.Json)]
     [ProducesResponseType(typeof(List<ApiNote>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> ListNotes()
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized("Authentication required");
         }
 
         var notes = await _noteService.GetNotesByUserIdAsync(user.Id);
@@ -33,35 +35,43 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("/{noteId}")]
+    [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetNote([FromRoute] Guid noteId)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized("Authentication required");
         }
 
         var result = await _noteService.GetNoteAsync(noteId);
-
-        if (result == null || result.UserId != user.Id)
+        if (result == null)
         {
-            return NotFound();
+            return NotFound("Note not found");
+        }
+        if (result.UserId != user.Id)
+        {
+            return Forbid("You do not have access to this note");
         }
 
         return Ok(new ApiNote(result));
     }
 
     [HttpPost("/create")]
+    [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> CreateNote([FromBody] ApiNoteCreateRequest request)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized("Authentication required");
         }
 
         var result = await _noteService.CreateNoteAsync(user.Id, request.Title, request.Content);
@@ -70,14 +80,16 @@ public class NoteController : ControllerBase
     }
 
     [HttpPut("/{noteId}")]
+    [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> UpdateNote([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateRequest request)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
         {
-            return Unauthorized();
+            return Unauthorized("Authentication required");
         }
 
         var result = await _noteService.UpdateNoteAsync(noteId, note =>
@@ -85,7 +97,7 @@ public class NoteController : ControllerBase
             if (note.UserId != user.Id)
             {
                 return;
-            } 
+            }
 
             if (request.Title != null)
             {
@@ -99,4 +111,33 @@ public class NoteController : ControllerBase
 
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
+    /*
+    [HttpPut("/{noteId}/directory")]
+    public async Task<IActionResult> UpdateNoteDirectory([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateDirectoryRequest request)
+    {
+        var user = (UserEntity?)HttpContext.Items["User"];
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _noteService.UpdateNoteAsync(noteId, note => note.DirectoryId = request.DirectoryId);
+
+        return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
+    }
+
+    [HttpDelete("/{noteId}")]
+    public async Task<IActionResult> DeleteNote([FromRoute] Guid noteId)
+    {
+        var user = (UserEntity?)HttpContext.Items["User"];
+        if (user == null)
+        {
+            return Unauthorized();
+        }
+
+        var result = await _noteService.DeleteNoteAsync(noteId, user.Id);
+
+        return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
+    }
+    */
 }

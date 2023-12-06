@@ -17,16 +17,11 @@ public class UserService : IUserService
         _logger = logger;
     }
 
-    public async Task<OneOf<UserEntity, ApiError>> Register(AccountRegisterApiRequest request)
+    public async Task<OneOf<UserRegisterOk, UserRegisterConflict>> Register(AccountRegisterApiRequest request)
     {
-        if (await _dbContext.Users.AnyAsync(e => e.Username == request.Username))
+        if (await _dbContext.Users.AnyAsync(e => e.Username == request.Username || e.Email == request.Email))
         {
-            return new ApiError("Username is already taken");
-        }
-
-        if (await _dbContext.Users.AnyAsync(e => e.Email == request.Email))
-        {
-            return new ApiError("Email is already taken");
+            return new UserRegisterConflict();
         }
 
         var user = new UserEntity
@@ -39,22 +34,22 @@ public class UserService : IUserService
         await _dbContext.Users.AddAsync(user);
         await _dbContext.SaveChangesAsync();
 
-        return user;
+        return new UserRegisterOk { User = user };
     }
 
-    public async Task<OneOf<string, ApiError>> Login(AccountLoginApiRequest request)
+    public async Task<OneOf<UserLoginOk, UserLoginUnauthroized>> Login(AccountLoginApiRequest request)
     {
         var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.Username == request.UsernameOrEmail || e.Email == request.UsernameOrEmail);
 
         if (user == null)
         {
             await Task.Delay(2000); // Simulate a slow response to prevent timing attacks
-            return new ApiError("Invalid username or password");
+            return new UserLoginUnauthroized(UserLoginUnauthroized.ReasonEnum.UserNotFound);
         }
 
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
         {
-            return new ApiError("Invalid username or password");
+            return new UserLoginUnauthroized(UserLoginUnauthroized.ReasonEnum.HashMismatch);
         }
 
         // Fill a 32-byte buffer with random data, and then convert it to a hex string to get a 64-character long cryptographically secure token
@@ -70,10 +65,10 @@ public class UserService : IUserService
         await _dbContext.AuthTokens.AddAsync(authToken);
         await _dbContext.SaveChangesAsync();
 
-        return token;
+        return new UserLoginOk { User = user, AuthToken = token };
     }
 
-    public async Task<OneOf<UserEntity, ApiError>> GetUserByTokenAsync(string token)
+    public async Task<OneOf<UserEntity, GenericError>> GetUserByTokenAsync(string token)
     {
         var tokenHash = Utils.HashToStr(token);
 
@@ -81,14 +76,14 @@ public class UserService : IUserService
 
         if (authToken == null)
         {
-            return new ApiError("Invalid token");
+            return new GenericError("Invalid token");
         }
 
         var user = await _dbContext.Users.FirstOrDefaultAsync(e => e.Id == authToken.UserId);
 
         if (user == null)
         {
-            return new ApiError("Invalid token");
+            return new GenericError("Invalid token");
         }
 
         return user;

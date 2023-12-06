@@ -18,7 +18,6 @@ import type {
   ApiNote,
   ApiNoteCreateRequest,
   ApiNoteUpdateRequest,
-  ProblemDetails,
 } from '../models/index';
 import {
     ApiNoteFromJSON,
@@ -27,8 +26,6 @@ import {
     ApiNoteCreateRequestToJSON,
     ApiNoteUpdateRequestFromJSON,
     ApiNoteUpdateRequestToJSON,
-    ProblemDetailsFromJSON,
-    ProblemDetailsToJSON,
 } from '../models/index';
 
 export interface CreatePostRequest {

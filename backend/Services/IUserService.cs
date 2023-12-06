@@ -11,19 +11,19 @@ public interface IUserService
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public Task<OneOf<UserEntity, ApiError>> Register(AccountRegisterApiRequest request);
+    public Task<OneOf<UserRegisterOk, UserRegisterConflict>> Register(AccountRegisterApiRequest request);
 
     /// <summary>
     /// Returns a authentication token if the login was successful, otherwise returns a error DTO containing the error message
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public Task<OneOf<string, ApiError>> Login(AccountLoginApiRequest request);
+    public Task<OneOf<UserLoginOk, UserLoginUnauthroized>> Login(AccountLoginApiRequest request);
 
     /// <summary>
     /// Returns a user if the token is valid, otherwise returns a error DTO containing the error message
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
-    public Task<OneOf<UserEntity, ApiError>> GetUserByTokenAsync(string token);
+    public Task<OneOf<UserEntity, GenericError>> GetUserByTokenAsync(string token);
 }
