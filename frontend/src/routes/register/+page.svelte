@@ -35,11 +35,11 @@
   }
 </script>
 
-<!-- Login Form -->
+<!-- Registration Form -->
 <div class="responsive-card card p-8">
   <form class="flex flex-col space-y-4" on:submit|preventDefault={handleSubmit} use:focusTrap={true}>
     <!-- Title -->
-    <h2>Login</h2>
+    <h2>Register</h2>
 
     <!-- Username -->
     <label class="label">
