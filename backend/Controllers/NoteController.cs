@@ -140,9 +140,14 @@ public class NoteController : ControllerBase
 
         return result.Match<IActionResult>(result => Ok("Note deleted"), err => BadRequest(err));
     }
-    /*
+
     [HttpPut("/{noteId}/directory")]
-    public async Task<IActionResult> UpdateNoteDirectory([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateDirectoryRequest request)
+    [Produces(Application.Json)]
+    [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateNoteDirectory([FromRoute] Guid noteId, [FromBody] ApiNoteUpdateDirectoryRequest request, [FromServices] IDirectoryService _directoryService)
     {
         var user = (UserEntity?)HttpContext.Items["User"];
         if (user == null)
@@ -150,23 +155,33 @@ public class NoteController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _noteService.UpdateNoteAsync(noteId, note => note.DirectoryId = request.DirectoryId);
-
-        return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
-    }
-
-    [HttpDelete("/{noteId}")]
-    public async Task<IActionResult> DeleteNote([FromRoute] Guid noteId)
-    {
-        var user = (UserEntity?)HttpContext.Items["User"];
-        if (user == null)
+        var note = await _noteService.GetNoteAsync(noteId);
+        if (note == null)
         {
-            return Unauthorized();
+            return NotFound();
+        }
+        if (note.UserId != user.Id)
+        {
+            return Forbid();
         }
 
-        var result = await _noteService.DeleteNoteAsync(noteId, user.Id);
+        Guid directoryId;
 
-        return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
+        // If the directory name is null, we want to remove the note from the directory
+        if (request.DirectoryName == null)
+        {
+            directoryId = Guid.Empty;
+        }
+        else
+        {
+            // Otherwise, we want to get or create the directory with the given name
+            var directory = await _directoryService.GetOrCreateDirectoryAsync(request.DirectoryName);
+
+            directoryId = directory.Id;
+        }
+
+        var updateResult = await _noteService.UpdateNoteAsync(noteId, noteId => noteId.DirectoryId = directoryId);
+
+        return updateResult.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
-    */
 }

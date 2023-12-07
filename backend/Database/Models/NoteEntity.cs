@@ -33,5 +33,7 @@ public class NoteEntityConfiguration : IEntityTypeConfiguration<NoteEntity>
 
         builder.HasOne(e => e.User).WithMany(e => e.Projects).HasForeignKey(e => e.UserId);
         builder.HasOne(e => e.Directory).WithMany(e => e.Notes).HasForeignKey(e => e.DirectoryId);
+
+        builder.Navigation(e => e.Directory).AutoInclude();
     }
 }

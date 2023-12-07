@@ -8,9 +8,10 @@
   import { AuthTokenStore } from '$lib/stores';
   import { NotesStore } from '$lib/stores/NotesStore';
   import type { Note } from '$lib/types/Note';
-  import { getToastStore } from '@skeletonlabs/skeleton';
+  import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 
   const toastStore = getToastStore();
+  const modalStore = getModalStore();
 
   $: if (browser && !$AuthTokenStore) {
     toastStore.trigger({
@@ -101,6 +102,36 @@
         });
       });
   }
+  function SetDirectory() {
+    if (!note) return;
+
+    modalStore.trigger({
+      type: 'prompt',
+      title: 'Set Directory',
+      body: 'Enter the directory name',
+      value: note.directoryName,
+      valueAttr: { type: 'text', minlength: 1, maxlength: 32, required: true },
+      response: (r: string) => {
+        noteApi
+          .noteIdDirectoryPut(noteId, {
+            directoryName: r,
+          })
+          .then((response) => {
+            note = MapNoteFromApi(response);
+            toastStore.trigger({
+              message: 'Directory updated',
+              background: 'variant-filled-success',
+            });
+          })
+          .catch((error) => {
+            toastStore.trigger({
+              message: 'Error while setting directory',
+              background: 'variant-filled-error',
+            });
+          });
+      },
+    });
+  }
 </script>
 
 <div class="p-8 flex flex-col gap-4">
@@ -117,6 +148,7 @@
         {/if}
         <button class="btn variant-filled-error" on:click={DeleteNote}> Delete Note </button>
       {/if}
+      <button class="btn variant-filled-primary" on:click={SetDirectory}> Set Directory </button>
       <a class="btn variant-filled-tertiary" href="/home"> Back </a>
     </div>
   </div>

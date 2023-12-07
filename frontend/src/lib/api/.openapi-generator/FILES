@@ -7,6 +7,7 @@ models/AccountLoginApiResponse.ts
 models/AccountRegisterApiRequest.ts
 models/ApiNote.ts
 models/ApiNoteCreateRequest.ts
+models/ApiNoteUpdateDirectoryRequest.ts
 models/ApiNoteUpdateRequest.ts
 models/index.ts
 runtime.ts

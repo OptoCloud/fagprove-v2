@@ -39,6 +39,12 @@ export interface ApiNote {
     content?: string | null;
     /**
      * 
+     * @type {string}
+     * @memberof ApiNote
+     */
+    directoryName?: string | null;
+    /**
+     * 
      * @type {Date}
      * @memberof ApiNote
      */
@@ -67,6 +73,7 @@ export function ApiNoteFromJSONTyped(json: any, ignoreDiscriminator: boolean): A
         'id': !exists(json, 'id') ? undefined : json['id'],
         'title': !exists(json, 'title') ? undefined : json['title'],
         'content': !exists(json, 'content') ? undefined : json['content'],
+        'directoryName': !exists(json, 'directoryName') ? undefined : json['directoryName'],
         'createdAt': !exists(json, 'createdAt') ? undefined : (new Date(json['createdAt'])),
     };
 }
@@ -83,6 +90,7 @@ export function ApiNoteToJSON(value?: ApiNote | null): any {
         'id': value.id,
         'title': value.title,
         'content': value.content,
+        'directoryName': value.directoryName,
         'createdAt': value.createdAt === undefined ? undefined : (value.createdAt.toISOString()),
     };
 }

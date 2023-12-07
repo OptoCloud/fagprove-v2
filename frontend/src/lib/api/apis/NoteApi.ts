@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   ApiNote,
   ApiNoteCreateRequest,
+  ApiNoteUpdateDirectoryRequest,
   ApiNoteUpdateRequest,
 } from '../models/index';
 import {
@@ -24,6 +25,8 @@ import {
     ApiNoteToJSON,
     ApiNoteCreateRequestFromJSON,
     ApiNoteCreateRequestToJSON,
+    ApiNoteUpdateDirectoryRequestFromJSON,
+    ApiNoteUpdateDirectoryRequestToJSON,
     ApiNoteUpdateRequestFromJSON,
     ApiNoteUpdateRequestToJSON,
 } from '../models/index';
@@ -34,6 +37,11 @@ export interface CreatePostRequest {
 
 export interface NoteIdDeleteRequest {
     noteId: string;
+}
+
+export interface NoteIdDirectoryPutRequest {
+    noteId: string;
+    apiNoteUpdateDirectoryRequest?: ApiNoteUpdateDirectoryRequest;
 }
 
 export interface NoteIdGetRequest {
@@ -89,6 +97,20 @@ export interface NoteApiInterface {
     /**
      */
     noteIdDelete(noteId: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string>;
+
+    /**
+     * 
+     * @param {string} noteId 
+     * @param {ApiNoteUpdateDirectoryRequest} [apiNoteUpdateDirectoryRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof NoteApiInterface
+     */
+    noteIdDirectoryPutRaw(requestParameters: NoteIdDirectoryPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiNote>>;
+
+    /**
+     */
+    noteIdDirectoryPut(noteId: string, apiNoteUpdateDirectoryRequest?: ApiNoteUpdateDirectoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiNote>;
 
     /**
      * 
@@ -216,6 +238,41 @@ export class NoteApi extends runtime.BaseAPI implements NoteApiInterface {
      */
     async noteIdDelete(noteId: string, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.noteIdDeleteRaw({ noteId: noteId }, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async noteIdDirectoryPutRaw(requestParameters: NoteIdDirectoryPutRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ApiNote>> {
+        if (requestParameters.noteId === null || requestParameters.noteId === undefined) {
+            throw new runtime.RequiredError('noteId','Required parameter requestParameters.noteId was null or undefined when calling noteIdDirectoryPut.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Authorization"] = this.configuration.apiKey("Authorization"); // Bearer authentication
+        }
+
+        const response = await this.request({
+            path: `/{noteId}/directory`.replace(`{${"noteId"}}`, encodeURIComponent(String(requestParameters.noteId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ApiNoteUpdateDirectoryRequestToJSON(requestParameters.apiNoteUpdateDirectoryRequest),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ApiNoteFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async noteIdDirectoryPut(noteId: string, apiNoteUpdateDirectoryRequest?: ApiNoteUpdateDirectoryRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ApiNote> {
+        const response = await this.noteIdDirectoryPutRaw({ noteId: noteId, apiNoteUpdateDirectoryRequest: apiNoteUpdateDirectoryRequest }, initOverrides);
         return await response.value();
     }
 
