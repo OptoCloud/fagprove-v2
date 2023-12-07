@@ -27,3 +27,7 @@ This is documentation to help you get started with this project either as a user
 # [Test report](test-report.md)
 
 ### This document describes the results of the testing phase of this project.
+
+# [Future work](future-work.md)
+
+### This document describes the future work that needs to be done on this project.
