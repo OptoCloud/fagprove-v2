@@ -23,3 +23,7 @@ This is documentation to help you get started with this project either as a user
 ### This guide is intended for developers of this project to help them get started.
 
 ### If you want to know how to contribute to, or deploy this project, this is the place to look.
+
+# [Test report](test-report.md)
+
+### This document describes the results of the testing phase of this project.
