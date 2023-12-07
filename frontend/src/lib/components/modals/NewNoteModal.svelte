@@ -16,12 +16,12 @@
     if (note) {
       NotesStore.add(note);
       toastStore.trigger({
-        message: 'Note updated',
+        message: 'Note created successfully',
         background: 'variant-filled-success',
       });
     } else {
       toastStore.trigger({
-        message: 'Error while updating note',
+        message: 'Error while creating note',
         background: 'variant-filled-error',
       });
     }
