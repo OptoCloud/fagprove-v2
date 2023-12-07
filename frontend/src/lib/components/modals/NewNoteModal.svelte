@@ -14,6 +14,9 @@
   function HandleResponse(response: ApiNote) {
     let note = MapNoteFromApi(response);
     if (note) {
+      if (!note.directoryName) {
+        note.directoryName = 'ROOT';
+      }
       NotesStore.add(note);
       toastStore.trigger({
         message: 'Note created successfully',

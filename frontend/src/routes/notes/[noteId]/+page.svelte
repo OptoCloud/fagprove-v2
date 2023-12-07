@@ -105,11 +105,14 @@
   function SetDirectory() {
     if (!note) return;
 
+    const directoryName = note.directoryName ?? 'ROOT';
+    const promptValue = directoryName === 'ROOT' ? '' : directoryName;
+
     modalStore.trigger({
       type: 'prompt',
       title: 'Set Directory',
       body: 'Enter the directory name',
-      value: note.directoryName,
+      value: promptValue,
       valueAttr: { type: 'text', minlength: 1, maxlength: 32, required: true },
       response: (r: string) => {
         noteApi
