@@ -2,6 +2,9 @@
 
 namespace backend.DataAnnotations;
 
+/// <summary>
+/// Validates that a string is a valid username (doesnt start/end with white space, is between 3 and 20 characters long, starts with a letter).
+/// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 public class UsernameAttribute : DataTypeAttribute
 {

@@ -2,6 +2,9 @@
 
 namespace backend.DataAnnotations;
 
+/// <summary>
+/// Validates that a string is a valid password (cannot start/end with white space, must be between 5 and 64 characters long).
+/// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 public class PasswordAttribute : DataTypeAttribute
 {

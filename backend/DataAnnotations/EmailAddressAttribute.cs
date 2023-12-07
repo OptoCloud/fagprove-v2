@@ -3,6 +3,9 @@ using System.Net.Mail;
 
 namespace backend.DataAnnotations;
 
+/// <summary>
+/// Validates that a string is a valid email address (using <see cref="MailAddress"/>).
+/// </summary>
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, AllowMultiple = false)]
 public class EmailAddressAttribute : DataTypeAttribute
 {

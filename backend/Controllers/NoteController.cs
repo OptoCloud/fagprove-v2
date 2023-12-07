@@ -17,6 +17,10 @@ public class NoteController : ControllerBase
         _noteService = projectService;
     }
 
+    /// <summary>
+    /// Get a list of all notes for the current user.
+    /// </summary>
+    /// <returns></returns>
     [HttpGet("list")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(List<ApiNote>), StatusCodes.Status200OK)]
@@ -34,6 +38,11 @@ public class NoteController : ControllerBase
         return Ok(notes.Select(note => new ApiNote(note)));
     }
 
+    /// <summary>
+    /// Get a note by its ID.
+    /// </summary>
+    /// <param name="noteId"></param>
+    /// <returns></returns>
     [HttpGet("{noteId}")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
@@ -61,6 +70,11 @@ public class NoteController : ControllerBase
         return Ok(new ApiNote(result));
     }
 
+    /// <summary>
+    /// Create a new note.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("create")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
@@ -79,6 +93,12 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
 
+    /// <summary>
+    /// Update a note by its ID.
+    /// </summary>
+    /// <param name="noteId">The ID of the note to update.</param>
+    /// <param name="request">The request containing the new note data. (Only the fields that are not null will be updated.)</param>
+    /// <returns></returns>
     [HttpPut("{noteId}")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
@@ -112,6 +132,11 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
 
+    /// <summary>
+    /// Delete a note by its ID.
+    /// </summary>
+    /// <param name="noteId"></param>
+    /// <returns></returns>
     [HttpDelete("{noteId}")]
     [Produces(Text.Plain)]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -141,6 +166,13 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(result => Ok("Note deleted"), err => BadRequest(err));
     }
 
+    /// <summary>
+    /// Update the directory of a note by its ID.
+    /// </summary>
+    /// <param name="noteId"></param>
+    /// <param name="request"></param>
+    /// <param name="_directoryService"></param>
+    /// <returns></returns>
     [HttpPut("{noteId}/directory")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]

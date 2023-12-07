@@ -16,6 +16,11 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
+    /// <summary>
+    /// Register a new user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("register")]
     [Produces(Text.Plain)]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
@@ -28,6 +33,11 @@ public class UserController : ControllerBase
         return result.Match<IActionResult>(dto => Ok("User created"), dto => Conflict("Username or email already exists"));
     }
 
+    /// <summary>
+    /// Login a user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPut("login")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(AccountLoginApiResponse), StatusCodes.Status200OK)]
