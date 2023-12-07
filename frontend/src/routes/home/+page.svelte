@@ -6,6 +6,7 @@
   import { NotesStore } from '$lib/stores/NotesStore';
   import { Accordion, AccordionItem, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
   import { MapNoteFromApi } from '$lib/mappers/NoteMapper';
+  import NoteList from '$lib/components/NoteList.svelte';
   import type { Note } from '$lib/types/Note';
 
   const toastStore = getToastStore();
@@ -41,8 +42,22 @@
     });
   }
 
+  let searchQuery = '';
+
+  // For every note, combine title and content into a single string, and check if it contains the search query
+  let searchResults: Note[] = [];
+  $: if (searchQuery.length === 0) {
+    searchResults = $NotesStore;
+  } else {
+    searchResults = $NotesStore.filter((note) => {
+      const noteContent = note.title + note.content;
+
+      return noteContent.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }
+
   // Group notes by directoryName
-  $: noteDirectories = $NotesStore.reduce((acc, note) => {
+  $: noteDirectories = searchResults.reduce((acc, note) => {
     const directoryName = note.directoryName ?? 'ROOT';
 
     const notes = acc.get(directoryName) ?? [];
@@ -53,50 +68,35 @@
 
     return acc;
   }, new Map<string, Note[]>());
+
+  $: rootList = noteDirectories.get('ROOT') ?? [];
+  $: otherLists = [...noteDirectories.entries()].filter(([directoryName]) => directoryName !== 'ROOT');
 </script>
 
 <div class="p-8 flex flex-col gap-4">
   <!-- Header -->
-  <div class="flex justify-between items-center w-[80vw]">
+  <div class="flex justify-between items-center space-x-4 w-[80vw]">
     <h1 class="h1">Notes</h1>
+    <input class="input" type="search" bind:value={searchQuery} placeholder="Search..." />
     <button class="btn variant-filled-primary" on:click={AddNote}> New Note </button>
   </div>
 
   <!-- List of note directories -->
-  <div class="overflow-y-auto h-[60vh]">
+  <div class="overflow-y-auto space-y-4">
+    <!-- Root directory -->
+    <NoteList notes={rootList} />
+
     <Accordion autocollapse>
-      {#each noteDirectories as [directoryName, notes] (directoryName)}
+      {#each otherLists as [directoryName, notes] (directoryName)}
         <AccordionItem class="card">
           <!-- Directory name -->
           <svelte:fragment slot="summary">
-            <h2 class="h2">{directoryName}</h2>
+            <h2 class="h2">Directory - {directoryName}</h2>
           </svelte:fragment>
 
           <!-- List of notes -->
           <svelte:fragment slot="content">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {#each notes as note (note.id)}
-                <!-- Note card -->
-                <a class="card break-words flex flex-col" href="/notes/{note.id}">
-                  <!-- Note title -->
-                  <header class="card-header">
-                    <h2 class="h2">{note.title}</h2>
-                  </header>
-
-                  <!-- Note content -->
-                  <section class="p-4 flex-1">
-                    {note.content.length > 200 ? note.content.substring(0, 200) + '...' : note.content}
-                  </section>
-
-                  <!-- Note footer -->
-                  <footer class="card-footer flex justify-end">
-                    <span>
-                      Created at {note.createdAt?.toLocaleString()}
-                    </span>
-                  </footer>
-                </a>
-              {/each}
-            </div>
+            <NoteList {notes} />
           </svelte:fragment>
         </AccordionItem>
       {/each}
