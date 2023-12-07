@@ -17,7 +17,7 @@ public class NoteController : ControllerBase
         _noteService = projectService;
     }
 
-    [HttpGet("/list")]
+    [HttpGet("list")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(List<ApiNote>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -34,7 +34,7 @@ public class NoteController : ControllerBase
         return Ok(notes.Select(note => new ApiNote(note)));
     }
 
-    [HttpGet("/{noteId}")]
+    [HttpGet("{noteId}")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -61,7 +61,7 @@ public class NoteController : ControllerBase
         return Ok(new ApiNote(result));
     }
 
-    [HttpPost("/create")]
+    [HttpPost("create")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -79,7 +79,7 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
 
-    [HttpPut("/{noteId}")]
+    [HttpPut("{noteId}")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]
@@ -112,7 +112,7 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(note => Ok(new ApiNote(note)), err => BadRequest(err));
     }
 
-    [HttpDelete("/{noteId}")]
+    [HttpDelete("{noteId}")]
     [Produces(Text.Plain)]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
@@ -141,7 +141,7 @@ public class NoteController : ControllerBase
         return result.Match<IActionResult>(result => Ok("Note deleted"), err => BadRequest(err));
     }
 
-    [HttpPut("/{noteId}/directory")]
+    [HttpPut("{noteId}/directory")]
     [Produces(Application.Json)]
     [ProducesResponseType(typeof(ApiNote), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status401Unauthorized)]

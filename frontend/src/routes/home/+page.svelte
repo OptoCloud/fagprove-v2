@@ -22,7 +22,7 @@
 
   // Get notes from API on page load
   noteApi
-    .listGet()
+    .noteListGet()
     // If the request is successful, remap the response to Note model, and remove null values
     .then((response) => NotesStore.set(response.map(MapNoteFromApi).filter((note) => note !== null) as Note[]))
     // If there's an error, show a error message

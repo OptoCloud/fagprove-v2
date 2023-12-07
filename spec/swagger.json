@@ -5,7 +5,7 @@
     "version": "v1"
   },
   "paths": {
-    "/list": {
+    "/Note/list": {
       "get": {
         "tags": ["Note"],
         "responses": {
@@ -35,7 +35,7 @@
         }
       }
     },
-    "/{noteId}": {
+    "/Note/{noteId}": {
       "get": {
         "tags": ["Note"],
         "parameters": [
@@ -217,7 +217,7 @@
         }
       }
     },
-    "/create": {
+    "/Note/create": {
       "post": {
         "tags": ["Note"],
         "requestBody": {
@@ -273,7 +273,7 @@
         }
       }
     },
-    "/{noteId}/directory": {
+    "/Note/{noteId}/directory": {
       "put": {
         "tags": ["Note"],
         "parameters": [

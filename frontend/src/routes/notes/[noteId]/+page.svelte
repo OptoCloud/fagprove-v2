@@ -30,7 +30,7 @@
   let newContent = '';
 
   noteApi
-    .noteIdGet(noteId)
+    .noteNoteIdGet(noteId)
     .then((response) => {
       note = MapNoteFromApi(response);
     })
@@ -64,7 +64,7 @@
     }
 
     noteApi
-      .noteIdPut(noteId, {
+      .noteNoteIdPut(noteId, {
         title: titleUpdated ? newTitle : null,
         content: contentUpdated ? newContent : null,
       })
@@ -87,7 +87,7 @@
   }
   function DeleteNote() {
     noteApi
-      .noteIdDelete(noteId)
+      .noteNoteIdDelete(noteId)
       .then((response) => {
         toastStore.trigger({
           message: 'Note deleted',
@@ -113,7 +113,7 @@
       valueAttr: { type: 'text', minlength: 1, maxlength: 32, required: true },
       response: (r: string) => {
         noteApi
-          .noteIdDirectoryPut(noteId, {
+          .noteNoteIdDirectoryPut(noteId, {
             directoryName: r,
           })
           .then((response) => {

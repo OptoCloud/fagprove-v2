@@ -30,7 +30,7 @@
 
   function AddNote() {
     noteApi
-      .createPost({
+      .noteCreatePost({
         title: title,
         content: content,
       })
